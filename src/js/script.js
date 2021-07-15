@@ -73,18 +73,12 @@ function buscarIdVariacao(idAnuncio) {
           respostaVariations += '[' + variationName + ': ' + variationValueName + ']: ' + anuncioId + '/variations/' + variationId + '\n';
 
           // Pegar EAN (GTIN) e SKU
-          ean = "";
-          sku = "";
-          for (var j = 0; j < variations[i].attributes.length; j++) {
-            if (variations[i].attributes[j].id === "GTIN") {
-              ean = variations[i].attributes[j].value_name;
-            }
+          ean = getEANvariation(response, variations[i]);
+          sku = getSKUvariation(response, variations[i]);
 
-            if (variations[i].attributes[j].id === "SELLER_SKU") {
-              sku = variations[i].attributes[j].value_name;
-            }
-          }
-
+/*          ean = getEAN(response, variations[i]);
+          sku = getSKU(variations[i]);
+*/
           respostaVariations += 'SKU: ' + sku + '       EAN: ' + ean + '\n';
 
           if (i < variations.length) {
@@ -100,7 +94,14 @@ function buscarIdVariacao(idAnuncio) {
 
       } else {
         window.alert('O Anúncio ' + anuncioId + ' não tem variação!!!');
-        resultado.value += anuncioId;
+        resultado.value += anuncioId + '\n';
+
+        // Pegar EAN (GTIN) e SKU
+        ean = getEAN(response);
+        sku = getSKU(response);
+
+        resultado.value += 'SKU: ' + sku + '       EAN: ' + ean + '\n';
+
       }
 
 
@@ -108,5 +109,53 @@ function buscarIdVariacao(idAnuncio) {
     });
 
 }
+
+
+
+function getEAN(item){
+  return getAttribute("GTIN", item);
+}
+
+function getEANvariation(item, variation){
+  return getAttributeVariation("GTIN", item, variation);
+}
+
+function getSKU(item){
+  return getAttribute("SELLER_SKU", item);
+}
+
+function getSKUvariation(item, variation){
+  return getAttributeVariation("SELLER_SKU", item, variation);
+}
+
+
+function getAttribute(nameAttribute, item){
+
+  const attributes = item.attributes;
+  for (var k = 0; k < attributes.length; k++) {
+    if (attributes[k].id === nameAttribute &&
+        attributes[k].value_name) {
+      return attributes[k].value_name;
+    }
+  } 
+
+  return "";
+}
+
+function getAttributeVariation(nameAttribute, item, variation){
+
+  for (var j = 0; j < variation.attributes.length; j++) {
+    if (variation.attributes[j].id === nameAttribute &&
+      variation.attributes[j].value_name) {
+      return variation.attributes[j].value_name;
+    }
+  }
+
+  return getAttribute(nameAttribute, item);
+}
+
+
+
+
 
 botaoBuscar.onclick = formarIdAnuncio;

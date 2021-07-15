@@ -15,3 +15,8 @@ ALTERAÇÃO 01   -   Data: 15/07/2021
 
   - O sistema retorna agora o SKU e o EAN (GTIN)
 
+
+ALTERAÇÃO 02   -   Data: 15/07/2021
+
+  - Refatoração das funções que retornam o SKU e o EAN (GTIN)
+
