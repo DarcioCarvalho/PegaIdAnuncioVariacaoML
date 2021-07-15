@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Pega ID do Anúncio e da Variação - Mercado Livre</title>
+  <link rel="stylesheet" href="./src/css/reset.css">
+  <link rel="stylesheet" href="./src/css/estilos.css">
+</head>
+
+
+<body>
+  <header class="container">
+    <h1>Pega ID do Anúncio e da Variação - Mercado Livre</h1>
+
+  </header>
+
+
+  <!-- *******  Início Parcelamento do Cartão de Crédito ******* -->
+
+
+  <div class="container destaque">
+
+
+    <section class="formulario">
+      <h2>Preencha as informações</h2>
+
+      <nav>
+        <!--          <form>  -->
+        <ul>
+
+          <li>Digite o ID do Anúncio:<input type="text" name="idAnuncio" id='idAnuncio' style="width: 120px;" value=''>
+          </li>
+
+          <li><button class="buscar">Buscar</button></li>
+
+        </ul>
+        <!--          </form>  -->
+      </nav>
+    </section>
+    <!-- fim .formulario -->
+
+
+
+  </div>
+  <!-- fim .container .destaque -->
+
+
+
+
+  <div class="container resultado">
+
+    <section class="resposta">
+
+      <label for="id_resultado" style="color: white;">Resultado do ID do Anúncio com Variação</label>
+      <textarea class="resultadoHtml" cols="40" id="id_resultado" maxlength="255" name="resultado" rows="4"
+        style="width:565px; height: 241px;"> </textarea>
+    </section>
+    <!-- fim .resposta -->
+
+
+  </div>
+
+
+  <footer>
+    <div class="container">
+      Pega ID do Anúncio e da Variação - Mercado Livre ( DNC Software )
+
+
+    </div>
+  </footer>
+
+
+
+  <!-- *******  Fim Parcelamento do Cartão de Crédito ******* -->
+
+
+
+
+  <!-- JavaScript -->
+  <script>
+
+    var botaoCalcular = document.querySelector('.calcular');
+
+    var resultado = document.querySelector('.resultadoHtml');
+
+    var botaoBuscar = document.querySelector('.buscar');
+
+
+    function formarIdAnuncio() {
+
+
+      var texto;
+
+      var auxIdAnuncio = document.querySelector('#idAnuncio').value;
+
+      //        window.alert('idAnuncio: ' + auxIdAnuncio);
+
+      if (auxIdAnuncio.trim() != '') {
+        texto = buscarIdVariacao(auxIdAnuncio);
+      } else {
+        window.alert('Digite o ID do Anúncio!!!');
+      }
+
+
+
+
+      //        resultado.value = texto;
+
+    }
+
+
+
+    function buscarIdVariacao(idAnuncio) {
+
+
+      //      console.log('idAnuncio: ' + idAnuncio);
+
+      resultado.value = '';
+
+      fetch('https://api.mercadolibre.com/items/' + idAnuncio, {
+        method: 'get'
+      })
+        .then(res => {
+          return res.json()
+        })
+        .then((response) => {
+
+          if ((response.status == 404) || (response.status == 400)) {
+            window.alert('Item com id ' + idAnuncio + ' não encontrado!');
+            return;
+          }
+
+          anuncioId = response.id;
+          anuncioTitle = response.title;
+          variations = response.variations;
+
+
+          //                resultado.value = JSON.stringify(response);
+
+          resultado.value = 'ID do Anúncio: ' + anuncioId + '\n' + 'Título do Anúncio: ' + anuncioTitle + '\n\n';
+
+
+          if (variations.length) {
+
+            var respostaVariations = '';
+
+            for (var i = 0; i < variations.length; i++) {
+
+              variationId = variations[i].id;
+              variationName = variations[i].attribute_combinations[0].name;
+              variationValueName = variations[i].attribute_combinations[0].value_name;
+
+              //                    resultado.value = anuncioId + '/variations/' + variationId;
+              respostaVariations += '[' + variationName + ': ' + variationValueName + ']: ' + anuncioId + '/variations/' + variationId + '\n';
+            }
+
+            //                  console.log('idCompleto: ' + anuncioId + '/variations/' + variationId);
+            console.log(respostaVariations);
+            resultado.value += respostaVariations;
+
+
+          } else {
+            window.alert('O Anúncio ' + anuncioId + ' não tem variação!!!');
+            resultado.value += anuncioId;
+          }
+
+
+
+        });
+
+    }
+
+
+
+    botaoBuscar.onclick = formarIdAnuncio;
+
+
+  </script>
+
+
+</body>
+
+</html>
