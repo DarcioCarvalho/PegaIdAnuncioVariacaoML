@@ -1,6 +1,7 @@
 # PROJETO: Pega ID do Anúncio e da Variação dos Anúncios do Mercado Livre
 
-Criado em 13/03/2021
+Criado em 13/03/2021 
+Autor: Dárcio Nuno de Carvalho
 
  - Usuário informa o ID do anúncio (MLB) e o sistema retorna os seguintes dados:
 
